@@ -30,7 +30,10 @@ const upload = multer({ storage: storage });
 //////////////////////////////////////////
 //routes
 const clientRoutes = require("./routes/client");
+const storeRoutes = require("./routes/store");
+
 app.use("/api/clients", clientRoutes);
+app.use("/api/stores", storeRoutes);
 //db onnection
 dbConnection();
 const PORT = process.env.PORT || 3000;

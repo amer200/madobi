@@ -1,7 +1,7 @@
 const Store = require("../models/store");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
+const mongoose = require('mongoose');
 
 exports.registerStore = async (req, res) => {
     try {
@@ -133,7 +133,8 @@ exports.addItemtoMenu = async (req, res) => {
     try {
         const storeId = req.store.id;
         const store = await Store.findById(storeId);
-        const { name, price, image, category } = req.body;
+        const { name, price, category } = req.body;
+        const image = req.file.path;
         const item = { name, price, image, category }
         if (price <= 0 || !price) {
             return res.status(400).json({ success: false, message: "يجب اادخال السعر و ان يكون اكبر من 0" });
@@ -147,5 +148,51 @@ exports.addItemtoMenu = async (req, res) => {
         res.json({ success: true, message: "تم اضافة المنتج", menu: store.menu });
     } catch (error) {
         res.status(500).json({ success: false, message: "حدث خطأ أثناء اضافة المنتج", error: error.message });
+    }
+}
+
+exports.editItem = async (req, res) => {
+    try {
+        const storeId = req.store.id;
+        const mId = req.body.mid;
+        const { name, price, category } = req.body;
+        const image = req.file.path;
+        // const store = await Store.findOne({ "menu._id": mId });
+
+        await Store.updateOne(
+            { "menu._id": mId },
+            {
+                $set: { "menu.$": { name, price, category, image: image } },
+            },
+            {
+                new: true,
+            }
+        )
+        res.status(200).json({
+            msg: "ok"
+        })
+    } catch (error) {
+        res.status(500).json({ success: false, message: "حدث خطأ أثناء اضافة المنتج", error: error.message });
+    }
+}
+exports.removeItem = async (req, res) => {
+    try {
+        const storeId = req.store.id;
+        const mId = req.params.mid;
+        console.log(req.params)
+        await Store.updateOne(
+            { "_id": storeId },
+            {
+                $pull: { menu: { _id: mId } },
+            },
+            {
+                new: true,
+            }
+        )
+        res.status(200).json({
+            msg: "ok"
+        })
+    } catch (error) {
+        res.status(500).json({ success: false, message: "حدث خطأ أثناء حذف المنتج", error: error.message });
     }
 }

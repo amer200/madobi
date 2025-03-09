@@ -13,4 +13,6 @@ router.get("/get-by-id/:id", storeController.getStoreById);
 router.patch("/active/:id", storeController.activateStore);
 /**********************menu***********************************************/
 router.post("/menu/add-item", storeMiddleware.isAuth, storeController.addItemtoMenu);
+router.put("/menu/edit-item", storeMiddleware.isAuth, storeController.editItem);
+router.delete("/menu/delete-item/:mid", storeMiddleware.isAuth, storeController.removeItem);
 module.exports = router;

@@ -27,6 +27,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 app.post("/api/stores/menu/add-item", upload.single("img"));
+app.put("/api/stores/menu/edit-item", upload.single("img"));
 app.post("/api/delivery-agent/register", upload.fields([
     { name: "agentPhoto", maxCount: 1 },
     { name: "vehiclePhoto", maxCount: 1 },

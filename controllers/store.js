@@ -35,7 +35,7 @@ exports.loginStore = async (req, res) => {
             return res.status(400).json({ success: false, message: "كلمة المرور غير صحيحة" });
         }
 
-        const token = jwt.sign({ storeId: store._id }, "SECRET_KEY", { expiresIn: "7d" });
+        const token = jwt.sign({ storeId: store._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
 
         res.json({ success: true, message: "تم تسجيل الدخول بنجاح", token, store });
     } catch (error) {
@@ -88,7 +88,7 @@ exports.getAllActiveStores = async (req, res) => {
         res.status(500).json({ success: false, message: "حدث خطأ أثناء جلب المحلات", error: error.message });
     }
 };
-exports.getAllStores = async (req, res) =>{
+exports.getAllStores = async (req, res) => {
     try {
         const stores = await Store.find();
 
@@ -127,3 +127,25 @@ exports.activateStore = async (req, res) => {
         res.status(500).json({ success: false, message: "حدث خطأ أثناء تفعيل المحل", error: error.message });
     }
 };
+
+/******************************menus************************/
+exports.addItemtoMenu = async (req, res) => {
+    try {
+        const storeId = req.store.id;
+        const store = await Store.findById(storeId);
+        const { name, price, image, category } = req.body;
+        const item = { name, price, image, category }
+        if (price <= 0 || !price) {
+            return res.status(400).json({ success: false, message: "يجب اادخال السعر و ان يكون اكبر من 0" });
+        }
+        if (!name) {
+            return res.status(400).json({ success: false, message: "يجب إدخال الاسم " });
+        }
+
+        store.menu.push(item);
+        await store.save();
+        res.json({ success: true, message: "تم اضافة المنتج", menu: store.menu });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "حدث خطأ أثناء اضافة المنتج", error: error.message });
+    }
+}

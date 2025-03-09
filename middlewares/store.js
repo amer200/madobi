@@ -10,7 +10,7 @@ exports.isAuth = async (req, res, next) => {
 
         const token = authHeader.split(" ")[1];
 
-        const decoded = jwt.verify(token, "SECRET_KEY");
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         const store = await Store.findById(decoded.storeId);
         if (!store) {
@@ -20,6 +20,6 @@ exports.isAuth = async (req, res, next) => {
         req.store = { id: store._id };
         next()
     } catch (error) {
-        res.status(401).json({ success: false, message: "توكن غير صالح أو انتهت صلاحيته" });
+        res.status(401).json({ success: false, error: error, message: "توكن غير صالح أو انتهت صلاحيته" });
     }
 };

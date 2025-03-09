@@ -55,7 +55,7 @@ const storeSchema = new mongoose.Schema(
                 name: String,
                 price: Number,
                 image: String,
-                category: [String],
+                category: String,
                 available: { type: Boolean, default: true },
             },
         ],

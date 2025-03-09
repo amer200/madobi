@@ -26,13 +26,14 @@ const storage = multer.diskStorage({
     }
 });
 const upload = multer({ storage: storage });
-app.post("/api/", upload.fields([
+app.post("/api/stores/menu/add-item", upload.single("img"));
+app.post("/api/delivery-agent/register", upload.fields([
     { name: "agentPhoto", maxCount: 1 },
     { name: "vehiclePhoto", maxCount: 1 },
     { name: "vehicleLicense", maxCount: 1 },
     { name: "driverLicense", maxCount: 1 },
 ]))
-app.put("/api/", upload.fields([
+app.put("/api/delivery-agent", upload.fields([
     { name: "agentPhoto", maxCount: 1 },
     { name: "vehiclePhoto", maxCount: 1 },
     { name: "vehicleLicense", maxCount: 1 },
@@ -45,7 +46,7 @@ const storeRoutes = require("./routes/store");
 const deliveryAgentRoutes = require("./routes/deliveryAgent");
 app.use("/api/clients", clientRoutes);
 app.use("/api/stores", storeRoutes);
-app.use("/api/deivery-agent", deliveryAgentRoutes);
+app.use("/api/delivery-agent", deliveryAgentRoutes);
 //db onnection
 dbConnection();
 const PORT = process.env.PORT || 3000;

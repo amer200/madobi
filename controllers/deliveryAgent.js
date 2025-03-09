@@ -6,7 +6,6 @@ exports.registerAgent = async (req, res) => {
     try {
         const { name, phone, email, password, vehicleType, vehicleNumber } = req.body;
         const { agentPhoto, vehiclePhoto, vehicleLicense, driverLicense } = req.files; // استقبال الصور
-
         const existingAgent = await DeliveryAgent.findOne({ phone });
         if (existingAgent) return res.status(400).json({ message: "رقم الهاتف مستخدم بالفعل" });
 
@@ -41,7 +40,8 @@ exports.registerAgent = async (req, res) => {
         res.status(201).json({ message: "تم التسجيل بنجاح، انتظر تفعيل الحساب من الأدمن" });
 
     } catch (error) {
-        res.status(500).json({ message: "خطأ في السيرفر", error });
+        console.log(error)
+        res.status(500).json({ message: "خطأ في السيرفر", error: error });
     }
 };
 exports.loginAgent = async (req, res) => {
